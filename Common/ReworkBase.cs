@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
@@ -19,11 +20,14 @@ namespace MaladyOverhaul.Common.ReworkBase
                 if (Main.dedServ)
                     return;
 
+                spriteBatch.End();
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
                 foreach (var data in DrawMaladyUIList)
                 {
                     var texture = MaladyOverhaul.Icons[data.Item2].Item1.Value;
-                    spriteBatch.Draw(texture, data.Item1, null, Color.White, 0, texture.Size() / 2, Main.GameZoomTarget / Main.UIScale, SpriteEffects.None, 0);
-                    Utils.DrawBorderString(spriteBatch, data.Item5.ToString(), data.Item1 + texture.Size() * 0.6f, Color.White);
+                    var origin = texture.Size() / 2;
+                    spriteBatch.Draw(texture, data.Item1 - Main.screenPosition, null, Color.White, 0, origin, Main.GameZoomTarget / Main.UIScale, SpriteEffects.None, 0);
+                    Utils.DrawBorderString(spriteBatch, data.Item5.ToString(), data.Item1 - Main.screenPosition + texture.Size() * 0.15f, Color.White);
 
                     if (data.Item3 == 0)
                         continue;
@@ -33,12 +37,13 @@ namespace MaladyOverhaul.Common.ReworkBase
 
                     texture = MaladyOverhaul.Icons[data.Item2].Item2.Value;
 
-                    var offset = new Vector2(0, -data.Item3);
+                    var offset = new Vector2(0, data.Item3);
 
                     var color = Color.White;
-                    color.A -= (byte)(data.Item3  * 10);
+                    color.A -= (byte)Math.Min(255, data.Item3 * 19);
+                    origin = texture.Size() / 2;
 
-                    spriteBatch.Draw(texture, data.Item1 + offset, null, color, 0, texture.Size() / 2, Main.GameZoomTarget / Main.UIScale, SpriteEffects.None, 0);
+                    spriteBatch.Draw(texture, data.Item1 - Main.screenPosition - offset, null, color, 0, origin, Main.GameZoomTarget / Main.UIScale, SpriteEffects.None, 0);
 
                     spriteBatch.End();
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
@@ -87,7 +92,7 @@ namespace MaladyOverhaul.Common.ReworkBase
             public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
             {
                 base.ModifyInterfaceLayers(layers);
-                int index = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+                int index = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Entity Health Bars"));
                 if (index == -1)
                     return;
 

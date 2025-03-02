@@ -15,20 +15,23 @@ namespace MaladyOverhaul
     public class MaladyOverhaul : Mod
     {
         public static Dictionary<string, (Asset<Texture2D>, Asset<Texture2D>)> Icons = [];
+        public static Dictionary<string, (int, int)> Debuffs = [];
+        public static string[] names = ["Fire", "Poison", "Venom", "Frostbite", "Chilled"];
         public override void Load()
         {
             if (Main.netMode != NetmodeID.Server)
             {
-                Icons.Add("Fire", (null, null));
-                Icons.Add("Poison", (null, null));
-                Icons.Add("Venom", (null, null));
-                Icons.Add("Frostbite", (null, null));
-                Icons.Add("Chilled", (null, null));
-
-                foreach (var t in Icons)
+                foreach (var n in names)
                 {
-                    Icons[t.Key] = (Assets.Request<Texture2D>($"Assets/{t.Key}"), Assets.Request<Texture2D>($"Assets/{t.Key}White"));
+                    Icons[n] = (Assets.Request<Texture2D>($"Assets/{n}Icon"), Assets.Request<Texture2D>($"Assets/{n}IconWhite"));
                 }
+
+                Debuffs["Fire"] = (4, 25);
+                Debuffs["Venom"] = (2, 15);
+                Debuffs["Poison"] = (5, 30);
+                Debuffs["Frostbite"] = (5, 50);
+                Debuffs["Chilled"] = (3, 40);
+
             }
         }
         public override void Unload()
