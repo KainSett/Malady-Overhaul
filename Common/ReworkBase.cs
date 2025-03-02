@@ -91,7 +91,7 @@ namespace MaladyOverhaul.Common.ReworkBase
                 if (index == -1)
                     return;
 
-                layers.Insert(index, new LegacyGameInterfaceLayer("TheBindingOfRarria: DoT UI", delegate
+                layers.Insert(index, new LegacyGameInterfaceLayer("MaladyOverhaul: Malady UI", delegate
                 {
                     Interface.Draw(Main.spriteBatch, new GameTime());
                     return true;
