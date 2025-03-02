@@ -15,7 +15,6 @@ namespace MaladyOverhaul.Common
             public int amount = 0;
             public override void Update(int type, Player player, ref int buffIndex)
             {
-                player.lifeRegenCount = 0;
                 var list = player.GetModPlayer<ReworkPlayer>().individualList;
                 var debuffs = MaladyOverhaul.Debuffs;
 
@@ -23,14 +22,41 @@ namespace MaladyOverhaul.Common
 
                 if (n != "")
                 {
+                    ReworkDebuffs(n, ref player);
+                    amount = Math.Clamp(amount, 1, MaladyOverhaul.Debuffs[n].Item1);
                     player.GetModPlayer<ReworkPlayer>().stacks[n] = amount;
                     var time = debuffs[n].Item2 - (player.buffTime[buffIndex] % debuffs[n].Item2);
-                    if (time == 0)
-                    {
-                        player.statLife = Math.Max(player.statLife - amount, 1);
-                    }
 
-                    list.Add((player.Center, n, time, player.whoAmI, debuffs[n].Item1));
+                    if (n != "Chilled")
+                    {
+                        if (time == 1)
+                            player.statLife -= (amount / 2) % player.statLife;
+                    }
+                    else 
+                        player.moveSpeed *= (1 - 0.1f * amount);
+
+                    list.Add((player.Center, n, time, player.whoAmI, amount));
+                }
+            }
+            public static void ReworkDebuffs(string name, ref Player player)
+            {
+                switch (name)
+                {
+                    case "Fire":
+                        player.lifeRegenCount += 8;
+                        break;
+                    case "Poison":
+                        player.lifeRegenCount += 4;
+                        break;
+                    case "Venom":
+                        player.lifeRegenCount += 30; 
+                        break;
+                    case "Frostbite":
+                        player.lifeRegenCount += 16; 
+                        break;
+                    case "Chilled":
+                        player.moveSpeed *= 4 / 3; 
+                        break;
                 }
             }
             public override bool ReApply(int type, Player player, int time, int buffIndex)
@@ -39,7 +65,7 @@ namespace MaladyOverhaul.Common
 
                 string n = GetMaladyName(type);
                 if (n != "")
-                    stacks[n] = Math.Clamp(stacks[n] + 1, 0, MaladyOverhaul.Debuffs[n].Item1);
+                    amount = Math.Clamp(stacks[n] + 1, 1, MaladyOverhaul.Debuffs[n].Item1);
 
                 return base.ReApply(type, player, time, buffIndex);
             }
@@ -89,7 +115,7 @@ namespace MaladyOverhaul.Common
 
             for (int i = individualList.Count - 1; i > -1; i--)
             {
-                Vector2 offset = new(50 * i - (individualList.Count - 1) * 25, -60);
+                Vector2 offset = new(50 * i - (individualList.Count - 1) * 25, - 60);
                 var t = individualList[i];
                 individualList[i] = (t.Item1 + offset, t.Item2, t.Item3, t.Item4, t.Item5);
             }

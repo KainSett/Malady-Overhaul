@@ -27,7 +27,7 @@ namespace MaladyOverhaul
                 }
 
                 Debuffs["Fire"] = (4, 25);
-                Debuffs["Venom"] = (2, 15);
+                Debuffs["Venom"] = (2, 10);
                 Debuffs["Poison"] = (5, 30);
                 Debuffs["Frostbite"] = (5, 50);
                 Debuffs["Chilled"] = (3, 40);

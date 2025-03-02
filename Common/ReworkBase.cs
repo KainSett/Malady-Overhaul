@@ -27,7 +27,7 @@ namespace MaladyOverhaul.Common.ReworkBase
                     var texture = MaladyOverhaul.Icons[data.Item2].Item1.Value;
                     var origin = texture.Size() / 2;
                     spriteBatch.Draw(texture, data.Item1 - Main.screenPosition, null, Color.White, 0, origin, Main.GameZoomTarget / Main.UIScale, SpriteEffects.None, 0);
-                    Utils.DrawBorderString(spriteBatch, data.Item5.ToString(), data.Item1 - Main.screenPosition + texture.Size() * 0.15f, Color.White);
+                    Utils.DrawBorderString(spriteBatch, data.Item5.ToString(), data.Item1 - Main.screenPosition + texture.Size() * 0.1f, Color.White);
 
                     if (data.Item3 == 0)
                         continue;
